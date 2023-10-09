@@ -1,0 +1,4 @@
+minikube start --vm-driver=hyperv
+
+minikube addons enable ingress
+minikube addons enable ingress-dns

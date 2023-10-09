@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-urls
+data:
+  RABBIT_URI: "rabbitmq-service:5672"
+  MONGO_URI: "mongodb://mongodb-service:27017/SCA_PostAndComments"
+  ALPHA_URI: "cityalpha.app"
+  BETA_URI: "citybeta.app"
+  GAMA_URI: "citygama.app"

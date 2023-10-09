@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alpha-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: alpha-app
+  template:
+    metadata:
+      labels:
+        app: alpha-app
+    spec:
+      containers:
+      - name: alpha-app
+        image: citylarry/alpha:latest
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            configMapKeyRef:
+              name: service-urls
+              key: MONGO_URI
+        - name: RABBIT_URI
+          valueFrom:
+            configMapKeyRef:
+              name: service-urls
+              key: RABBIT_URI
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: beta-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: beta-app
+  template:
+    metadata:
+      labels:
+        app: beta-app
+    spec:
+      containers:
+      - name: beta-app
+        image: citylarry/beta:latest
+        ports:
+        - containerPort: 8081
+        env:
+        - name: MONGO_URI
+          valueFrom:
+            configMapKeyRef:
+              name: service-urls
+              key: MONGO_URI
+        - name: RABBIT_URI
+          valueFrom:
+            configMapKeyRef:
+              name: service-urls
+              key: RABBIT_URI
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gama-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gama-app
+  template:
+    metadata:
+      labels:
+        app: gama-app
+    spec:
+      containers:
+      - name: gama-app
+        image: citylarry/gama:latest
+        ports:
+        - containerPort: 8082
+        env:
+        - name: RABBIT_URI
+          valueFrom:
+            configMapKeyRef:
+              name: service-urls
+              key: RABBIT_URI
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alpha-service
+spec:
+  selector:
+    app: alpha-app
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: beta-service
+spec:
+  selector:
+    app: beta-app
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gama-service
+spec:
+  selector:
+    app: gama-app
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082

@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: back-ingress
+  annotations:
+    #nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-staging
+
+spec:
+  tls:
+  - hosts:
+      - cityalpha.app
+      - citybeta.app
+      - citygama.app
+    secretName: back-tls
+  rules:
+  - host: cityalpha.app
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: alpha-service
+            port:
+              number: 8080
+  - host: citybeta.app
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: beta-service
+            port:
+              number: 8081
+  - host: citygama.app
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gama-service
+            port:
+              number: 8082
+
+# CRDs: kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.crds.yaml
+
+#Cert-manager: kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
